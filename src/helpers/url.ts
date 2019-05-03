@@ -1,4 +1,4 @@
-import { isDate, isObject } from './util'
+import { isDate, isPlainObject } from './util'
 
 function encode(val: string): string {
   // 对于字符 @、:、$、,、、[、]，我们是允许出现在 url 中的，不希望被 encode
@@ -40,7 +40,7 @@ export function buildURL(url: string, params?: any): string {
         val = val.toISOString()
       }
       // 参数值为对象， JSON化
-      else if (isObject(val)) {
+      else if (isPlainObject(val)) {
         val = JSON.stringify(val)
       }
       // 对key, val 进行encode
