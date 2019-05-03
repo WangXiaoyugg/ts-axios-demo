@@ -1,5 +1,5 @@
 const express = require('express')
-const bodyParser = require("body-parser")
+const bodyParser = require('body-parser')
 const webpack = require('webpack')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
@@ -9,10 +9,10 @@ const app = express()
 const compiler = webpack(webpackConfig)
 
 app.use(webpackDevMiddleware(compiler, {
-  publicPath: "/__build__/",
+  publicPath: '/__build__/',
   stats: {
     color: true,
-    chunks: false,
+    chunks: false
   }
 }))
 
@@ -20,18 +20,18 @@ app.use(webpackHotMiddleware(compiler))
 app.use(express.static(__dirname))
 
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extend: true}))
+app.use(bodyParser.urlencoded({ extend: true }))
 
 const router = express.Router()
 
 router.get('/simple/get', function(req, res) {
   res.json({
-    msg:`hello world`
+    msg: `hello world`
   })
 })
 
 router.get('/base/get', function(req, res) {
-  res.json(req.query);
+  res.json(req.query)
 })
 
 router.post('/base/post', function(req, res) {
@@ -41,7 +41,7 @@ router.post('/base/post', function(req, res) {
 router.post('/base/buffer', function(req, res) {
   let msg = []
   req.on('data', (chunk) => {
-    if(chunk) {
+    if (chunk) {
       msg.push(chunk)
     }
   })
@@ -50,6 +50,27 @@ router.post('/base/buffer', function(req, res) {
     res.json(buf.toJSON())
   })
 })
+
+
+router.get('/error/get', (req, res) => {
+  if (Math.random() > 0.5) {
+    res.json({
+      msg: `Hello world`
+    })
+  } else {
+    res.status(500)
+    res.end()
+  }
+})
+
+router.get('/error/timeout', (req, res) => {
+  setTimeout(() => {
+    res.json({
+      msg: `hello world`
+    })
+  }, 3000)
+})
+
 
 app.use(router)
 
